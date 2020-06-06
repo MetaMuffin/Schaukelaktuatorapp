@@ -5,37 +5,40 @@ import 'dart:math';
 
 import 'globals.dart';
 
-class Schwingungsverlauf extends StatefulWidget {
+class AppSchwingungsverlauf extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return SchwingungsverlaufState();
+    return AppSchwingungsverlaufState();
   }
-
 }
 
-class RTDataAmplitude{
-  RTDataAmplitude(time,current,setpoint);
-  double current;
-  double setpoint;
+class RTDataVelPwm{
+  RTDataVelPwm(this.time,this.pwm,this.vel);
+  double pwm;
+  double vel;
   DateTime time;
 }
 
-class SchwingungsverlaufState extends State<Schwingungsverlauf> {
+class AppSchwingungsverlaufState extends State<AppSchwingungsverlauf> {
 
   List<charts.Series<dynamic, DateTime>> plotData = [];
-  List<RTDataAmplitude> amplitudeData = [];
+  List<RTDataVelPwm> amplitudeData = [];
 
-  final int maxDataLen = 20;
+  final int maxDataLen = 200;
 
   @override
   void initState() {
     super.initState();
-    updatePlot(new RTDataAmplitude(DateTime.now(), 0, 0));
+    updatePlot(new RTDataVelPwm(DateTime.now(), 0, 0));
     wse.on("rt_data",context,(ev,data){
-      String sdata = data.toString();
-      List<double> ddata = sdata.split(",").map((e) => double.parse(e));
-      
+      String sdata = ev.eventData.toString();
+      List<double> ddata = sdata.split(",").map((v)=> double.parse(v)).toList();
+      updatePlot(new RTDataVelPwm(DateTime.fromMillisecondsSinceEpoch(ddata[0].toInt()), ddata[1], ddata[2]));
     });
+  }
+
+  void expansionChanged(bool value){
+    wsSend("rt_data_onoff", value ? "1" : "0");
   }
 
   @override
@@ -50,32 +53,33 @@ class SchwingungsverlaufState extends State<Schwingungsverlauf> {
           ),
           height: 200,
         )
-      ]
+      ],
+      onExpansionChanged: expansionChanged
     );
   }
 
-  void updatePlot(RTDataAmplitude newAmpltudeCata){
+  void updatePlot(RTDataVelPwm newAmpltudeData){
     
 
-    amplitudeData.add(newAmpltudeCata);
+    amplitudeData.add(newAmpltudeData);
     amplitudeData = amplitudeData.sublist(max(amplitudeData.length - maxDataLen, 0));
 
-
+    
     setState(() {
       plotData = [
-        new charts.Series<RTDataAmplitude,DateTime>(
+        new charts.Series<RTDataVelPwm,DateTime>(
           id: "current",
           data: amplitudeData,
           colorFn: (_,__) => charts.MaterialPalette.red.shadeDefault,
-          domainFn: (RTDataAmplitude v, _) => v.time,
-          measureFn: (RTDataAmplitude v, _) => v.current,
+          domainFn: (RTDataVelPwm v, _) => v.time,
+          measureFn: (RTDataVelPwm v, _) => v.pwm,
         ),
-        new charts.Series<RTDataAmplitude,DateTime>(
+        new charts.Series<RTDataVelPwm,DateTime>(
           id: "setpoint",
           data: amplitudeData,
           colorFn: (_,__) => charts.MaterialPalette.blue.shadeDefault,
-          domainFn: (RTDataAmplitude v, _) => v.time,
-          measureFn: (RTDataAmplitude v, _) => v.setpoint,
+          domainFn: (RTDataVelPwm v, _) => v.time,
+          measureFn: (RTDataVelPwm v, _) => v.vel,
         )
       ];
     });

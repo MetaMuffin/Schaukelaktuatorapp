@@ -8,14 +8,14 @@ import 'dart:math';
 import 'package:schaukelaktuatorapp/globals.dart';
 
 
-class Amplitudenregelung extends StatefulWidget {
+class AppAmplitudenregelung extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return AmplitudenregelungState();
+    return AppAmplitudenregelungState();
   }
 }
 
-class AmplitudenregelungState extends State<Amplitudenregelung> {
+class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
   double amplitudeSetpoint = 0.1;
   double amplitudeCurrent = 0;
 

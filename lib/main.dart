@@ -56,8 +56,8 @@ class _AppControlsState extends State<AppControls> {
   Widget build(BuildContext context) {
     return ListView(
         children: <Widget>[
-          Amplitudenregelung(),
-          Schwingungsverlauf(),
+          AppAmplitudenregelung(),
+          AppSchwingungsverlauf(),
         ],
       );
   }

@@ -20,6 +20,7 @@ void startListen(context){
     String pdata = data.toString().split(":").sublist(1).join(":");
     wse.emit(pname,null,pdata);
   }, onDone: () {}, onError: (error) {
+    print("Ws Connection failed");
     Timer(Duration(seconds: 1), () => startListen(context));
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text("Och ne... Es konnte keine verbindung zum Aktuator aufgebaut werden."),
