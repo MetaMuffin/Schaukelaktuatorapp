@@ -61,7 +61,7 @@ class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
           activeColor: Theme.of(context).accentColor,
           onChanged: sliderUpdate,
           onChangeEnd: sendSetpoint,
-          value: amplitudeSetpoint,
+          value: max(0,min(0.8,amplitudeSetpoint)),
         ),
         Text("Aktuelle Amplitude: " + (amplitudeCurrent / pi * 180).toStringAsFixed(1)),
         SizedBox(
@@ -69,7 +69,7 @@ class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
           child: LinearProgressIndicator(
             backgroundColor: Colors.grey,
             valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
-            value: (amplitudeCurrent)
+            value: max(0,min(1,amplitudeSetpoint))
             
           ),
         ),
@@ -78,7 +78,7 @@ class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
           child: LinearProgressIndicator(
             backgroundColor: Colors.grey,
             valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColorDark),
-            value: (amplitudeSetpoint)
+            value: max(0,min(1,amplitudeCurrent))
           ),
         ),
       ],
