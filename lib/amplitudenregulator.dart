@@ -49,31 +49,31 @@ class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
     return ExpansionTile(
       title: Text("Amplitudenregelung"),
       children: <Widget>[
-        Text("Soll: " + (amplitudeSetpoint / pi * 180).toStringAsFixed(1)),
+        Text(
+            "Soll: " + (amplitudeSetpoint / pi * 180).toStringAsFixed(1) + "°"),
         Slider(
           min: 0,
           max: 0.8,
-          activeColor: Theme.of(context).hintColor,
+          activeColor: Colors.orange,
           onChanged: sliderUpdate,
           onChangeEnd: sendSetpoint,
           value: max(0, min(0.8, amplitudeSetpoint)),
         ),
         Text("Aktuelle Amplitude: " +
-            (amplitudeCurrent / pi * 180).toStringAsFixed(1)),
+            (amplitudeCurrent / pi * 180).toStringAsFixed(1) +
+            "°"),
         SizedBox(
           height: 30,
           child: LinearProgressIndicator(
               backgroundColor: Colors.grey,
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Theme.of(context).cardColor),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
               value: max(0, min(1, amplitudeSetpoint))),
         ),
         SizedBox(
           height: 30,
           child: LinearProgressIndicator(
               backgroundColor: Colors.grey,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColorDark),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
               value: max(0, min(1, amplitudeCurrent))),
         ),
       ],
