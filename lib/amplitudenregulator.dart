@@ -1,12 +1,7 @@
-
-
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import 'dart:math';
 import 'package:schaukelaktuatorapp/globals.dart';
-
 
 class AppAmplitudenregelung extends StatefulWidget {
   @override
@@ -19,36 +14,36 @@ class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
   double amplitudeSetpoint = 0.1;
   double amplitudeCurrent = 0;
 
-  void sliderUpdate(double value){
-    setState((){
+  void sliderUpdate(double value) {
+    setState(() {
       amplitudeSetpoint = value;
     });
   }
+
   Future<void> sendSetpoint(double value) async {
-    setState((){
+    setState(() {
       amplitudeSetpoint = value;
     });
-    wsSend("amplitude_setpoint",value.toStringAsFixed(3));
+    wsSend("amplitude_setpoint", value.toStringAsFixed(3));
   }
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-    wse.on("amplitude_setpoint", this,(ev, data){
-      double nv = double.parse(ev.eventData);
+    wse.on("amplitude_setpoint", this, (ev, data) {
+      double nv = double.parse(ev.eventData as String);
       setState(() {
         amplitudeSetpoint = nv;
       });
     });
-    wse.on("amplitude_current", this,(ev, data){
-      double nv = double.parse(ev.eventData);
+    wse.on("amplitude_current", this, (ev, data) {
+      double nv = double.parse(ev.eventData as String);
       setState(() {
         amplitudeCurrent = nv;
       });
     });
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -58,28 +53,28 @@ class AppAmplitudenregelungState extends State<AppAmplitudenregelung> {
         Slider(
           min: 0,
           max: 0.8,
-          activeColor: Theme.of(context).accentColor,
+          activeColor: Theme.of(context).hintColor,
           onChanged: sliderUpdate,
           onChangeEnd: sendSetpoint,
-          value: max(0,min(0.8,amplitudeSetpoint)),
+          value: max(0, min(0.8, amplitudeSetpoint)),
         ),
-        Text("Aktuelle Amplitude: " + (amplitudeCurrent / pi * 180).toStringAsFixed(1)),
+        Text("Aktuelle Amplitude: " +
+            (amplitudeCurrent / pi * 180).toStringAsFixed(1)),
         SizedBox(
           height: 30,
           child: LinearProgressIndicator(
-            backgroundColor: Colors.grey,
-            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
-            value: max(0,min(1,amplitudeSetpoint))
-            
-          ),
+              backgroundColor: Colors.grey,
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(Theme.of(context).cardColor),
+              value: max(0, min(1, amplitudeSetpoint))),
         ),
         SizedBox(
           height: 30,
           child: LinearProgressIndicator(
-            backgroundColor: Colors.grey,
-            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColorDark),
-            value: max(0,min(1,amplitudeCurrent))
-          ),
+              backgroundColor: Colors.grey,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColorDark),
+              value: max(0, min(1, amplitudeCurrent))),
         ),
       ],
     );
